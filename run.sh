@@ -32,7 +32,7 @@ srun -p sugon --gres=gpu:P100:1 python -m scripts.train \
 --config training_config/vampire.jsonnet \
 --serialization-dir ${VAMPIRE_DIR} \
 --environment VAMPIRE \
---device 0
+--device 0 > log_pretrain.txt 2>&1
 
 
 #export VAMPIRE_DIM=81
