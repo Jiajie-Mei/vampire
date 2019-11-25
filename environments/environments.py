@@ -6,7 +6,7 @@ import os
 CLASSIFIER = {
         "LAZY_DATASET_READER": 0,
         "CUDA_DEVICE": 0,
-        "EVALUATE_ON_TEST": 0,
+        "EVALUATE_ON_TEST": 1,
         "NUM_EPOCHS": 50,
         "SEED": RandomSearch.random_integer(0, 10000),
         "SEQUENCE_LENGTH": 400,
