@@ -16,6 +16,18 @@ from tqdm import tqdm
 from vampire.common.util import read_text, save_sparse, write_to_json
 
 
+def separate_hybrid_training_data(data_path):
+    path_labeled = os.path.join(os.path.dirname(data_path), 'train.jsonl')
+    assert os.path.abspath(path_labeled) != os.path.abspath(data_path)
+    f_out = open(path_labeled, 'w', encoding='utf-8')
+    print('separating labeled data out from %s, and save into %s' % (data_path, path_labeled))
+    with tqdm(open(data_path, "r"), desc=f"loading {data_path}") as f:
+        for line in f:
+            example = json.loads(line)
+            if 'label' in example:
+                f_out.write(line)
+
+
 def load_data(data_path: str, tokenize: bool = False, tokenizer_type: str = "just_spaces") -> List[str]:
     if tokenizer_type == "just_spaces":
         tokenizer = SpacyWordSplitter()
@@ -40,6 +52,7 @@ def load_data(data_path: str, tokenize: bool = False, tokenizer_type: str = "jus
             tokenized_examples.append(text)
     return tokenized_examples
 
+
 def main():
     parser = argparse.ArgumentParser(formatter_class = argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--train-path", type=str, required=True,
@@ -63,12 +76,14 @@ def main():
     args = parser.parse_args()
 
     if not os.path.isdir(args.serialization_dir):
-        os.mkdir(args.serialization_dir)
+        os.makedirs(args.serialization_dir)
     
     vocabulary_dir = os.path.join(args.serialization_dir, "vocabulary")
 
     if not os.path.isdir(vocabulary_dir):
         os.mkdir(vocabulary_dir)
+
+    separate_hybrid_training_data(args.train_path)
 
     tokenized_train_examples = load_data(args.train_path, args.tokenize, args.tokenizer_type)
     tokenized_dev_examples = load_data(args.dev_path, args.tokenize, args.tokenizer_type)
