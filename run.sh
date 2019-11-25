@@ -40,7 +40,7 @@ elif [[ ${mode} == pretrain ]]; then
 elif [[ ${mode} == train ]]; then
   export VAMPIRE_DIM=81
   #export THROTTLE=200
-  export EVALUATE_ON_TEST=0
+  export EVALUATE_ON_TEST=1
 
   srun -p sugon --gres=gpu:P100:1 python -m scripts.train \
   --config training_config/classifier.jsonnet \
